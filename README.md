@@ -62,6 +62,8 @@ Duplicación:
    Permitir duplicar registros existentes y modificar solo lo necesario.
 
 
+
+
 **Flujo Básico del Usuario**
 
 Inicio:
