@@ -108,3 +108,10 @@ h1 {
         background-image:linear-gradient(to bottom, #585858 0%, #1B1B1B 51%);
     }
 }
+
+@media (width:400px) {
+     ul img {
+        width: 15px;
+        height: 15px;
+    }
+}

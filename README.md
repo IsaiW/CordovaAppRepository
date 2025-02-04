@@ -87,3 +87,5 @@ Inicio:
    Abrir el escáner QR, identificar el objeto y mostrar los detalles almacenados.
     
 asd
+
+CordovaAppRepository
