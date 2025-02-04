@@ -27,3 +27,16 @@ function onDeviceReady() {
     console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
     document.getElementById('deviceready').classList.add('ready');
 }
+
+function loadView (viewName, IdElement = null, isAppend = false) {
+    $.ajax({
+        url: 'views/' + viewName + '.html',
+        type: 'GET',
+        success: function (response) {
+            IdElement === null ? console.error ('Elemento contenedor (IdElement) no definido') : (isAppend ? $ ('#' + IdElement).append(response) : $ ('#' + IdElement).html(response));
+        },
+        error: function (xhr, status, error) {
+            console.error ('Error al cargar la vista parcial: ' + error);
+        }
+});
+}
