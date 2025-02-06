@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link rel="stylesheet" href="css/style.css">
- <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"> <!-- Quizas borrar despues -->
- <title>Prueba</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"> <!-- Quizas borrar despues -->
+<title>Prueba</title>
 </head>
 <body>
 
 
 
- <!-- navbar -->
-  <!-- Mover despues el logo con transform en css manualmente -->
- <nav class="navbar navbar-dark align-items-center fixed-top bg-primary">
+<!-- navbar -->
+<nav class="navbar navbar-dark align-items-center fixed-top bg-primary">
   <div class="container-fluid ">
     <a class="navbar-brand h1" href="#">
       <img src="img/Cris.png" alt="Logo" width="35" height="29" class="logo d-inline-block align-text-top"> 
@@ -21,18 +20,32 @@
     </a>
     <ul class="nav justify-content-end">
       <li class="nav-item">
-        <a class="nav-link" href="#"><img class="" src="img/icons/search.svg" alt="search" width="23" height="24"></a>
+        <a class="nav-link" href="#"><img src="img/icons/search.svg" alt="search" width="23" height="24"></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#"><img class="" src="img/icons/qr.svg" alt="QR" width="23" height="24"></a>
+        <a class="nav-link" href="#"><img src="img/icons/qr.svg" alt="QR" width="23" height="24"></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#"><img class="" src="img/icons/menu-dots-vertical.svg" alt="dots" width="23" height="24"></a>
+        <a class="nav-link" href="#"><img src="img/icons/menu-dots-vertical.svg" alt="dots" width="23" height="24"></a>
       </li>
+    </ul>
   </div>
-  <!--Los svg se pueden cambiar de color desde su propio archivo svg-->
 </nav>
 
+<div class="container mt-5 pt-5">
+  <h2>Lista de Códigos QR Escaneados</h2>
+  <table class="table table-striped table-bordered table-hover mt-3">
+    <thead class="table-light">
+      <tr>
+        <th scope="col">Imagen</th>
+        <th scope="col">Código QR</th>
+      </tr>
+    </thead>
+    <tbody id="qrTableBody">
+      <!-- Aquí se agregarán los códigos QR -->
+    </tbody>
+  </table>
+</div>
 
 
 

@@ -86,6 +86,6 @@ Inicio:
   
    Abrir el escáner QR, identificar el objeto y mostrar los detalles almacenados.
     
-asd xd Papuemilio
+asd xd PapuemilioASAasdads
 
 CordovaAppRepository
