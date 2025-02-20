@@ -15,6 +15,7 @@ function addNewFolder() {
     }
 }
 
+
 function addNewObject(button) {
     const objectName = prompt("Ingrese el nombre del nuevo objeto:");
     if (objectName) {
@@ -71,4 +72,3 @@ function searchFolder() {
         }
     }
 }
-
