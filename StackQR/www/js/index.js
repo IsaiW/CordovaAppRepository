@@ -72,18 +72,3 @@ function searchFolder() {
     }
 }
 
-const data = null;
-
-const xhr = new XMLHttpRequest();
-xhr.withCredentials = false;
-
-xhr.addEventListener("readystatechange", function () {
-    if (this.readyState === this.DONE) {
-    console.log(this.responseText);
-    const dogImage = JSON.parse(this.responseText).message;
-    document.getElementById('dogImage').src = dogImage;
-    }
-});
-
-xhr.open("GET", "https://dog.ceo/api/breeds/image/random");
-xhr.send(data);
