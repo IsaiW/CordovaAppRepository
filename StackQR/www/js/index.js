@@ -1,42 +1,53 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
-// Wait for the deviceready event before using any of Cordova's device APIs.
-// See https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
-document.addEventListener('deviceready', onDeviceReady, false);
-
-function onDeviceReady() {
-    // Cordova is now initialized. Have fun!
-
-    console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
-    document.getElementById('deviceready').classList.add('ready');
+function addNewFolder() {
+    const folderName = prompt("Ingrese el nombre de la nueva carpeta:");
+    if (folderName) {
+        const tableBody = document.getElementById('table-body');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td><strong></strong></td>
+            <td>
+                <strong>${folderName}</strong>
+                <button class="btn btn-secondary btn-sm" onclick="addNewObject(this)">Agregar Objeto</button>
+                <div class="object-list"></div>
+            </td>
+        `;
+        tableBody.appendChild(newRow);
+    }
 }
 
-function loadView (viewName, IdElement = null, isAppend = false) {
-    $.ajax({
-        url: 'views/' + viewName + '.html',
-        type: 'GET',
-        success: function (response) {
-            IdElement === null ? console.error ('Elemento contenedor (IdElement) no definido') : (isAppend ? $ ('#' + IdElement).append(response) : $ ('#' + IdElement).html(response));
-        },
-        error: function (xhr, status, error) {
-            console.error ('Error al cargar la vista parcial: ' + error);
-        }
-});
+function addNewObject(button) {
+    const objectName = prompt("Ingrese el nombre del nuevo objeto:");
+    if (objectName) {
+        const row = button.closest('td');
+        const objectList = row.querySelector('.object-list');
+        const newObjectDiv = document.createElement('div');
+        newObjectDiv.classList.add('mb-3');
+        newObjectDiv.innerHTML = `
+            <div>
+                <input type="file" accept="image/*" onchange="previewImage(event, this)" class="form-control mb-2">
+                <div class="image-preview mb-2"></div>
+                <span>${objectName}
+                    <button class="btn btn-danger btn-sm" onclick="deleteObject(this)">-</button>
+                </span>
+            </div>
+        `;
+        objectList.appendChild(newObjectDiv);
+    }
+}
+
+function deleteObject(button) {
+    const objectDiv = button.closest('div');
+    objectDiv.remove();
+}
+
+function previewImage(event, input) {
+    const imagePreview = input.nextElementSibling;
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Image Preview" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">`;
+    }
+    if (file) {
+        reader.readAsDataURL(file);
+    }
 }
