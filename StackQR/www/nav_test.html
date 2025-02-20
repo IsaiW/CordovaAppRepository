@@ -17,17 +17,6 @@
                 <img src="img/Cris.png" alt="Logo" width="35" height="29" class="logo d-inline-block align-text-top"> 
                 StackQR
             </a>
-            <ul class="nav justify-content-end">
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><img src="img/icons/search.svg" alt="search" width="23" height="24"></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="scanQRCode()"><img src="img/icons/qr.svg" alt="QR" width="23" height="24"></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><img src="img/icons/menu-dots-vertical.svg" alt="dots" width="23" height="24"></a>
-                </li>
-            </ul>
         </div>
     </nav>
 
@@ -43,9 +32,10 @@
                 </thead>
                 <tbody id="table-body">
                     <tr>
-                        <td colspan="2">
+                        <td class="text-center">
                             <button class="btn btn-primary" onclick="addNewFolder()">Crear Carpeta</button>
                         </td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -58,13 +48,11 @@
             if (folderName) {
                 const tableBody = document.getElementById('table-body');
                 const newRow = document.createElement('tr');
-
                 newRow.innerHTML = `
+                    <td><strong></strong></td>
                     <td>
                         <strong>${folderName}</strong>
                         <button class="btn btn-secondary btn-sm" onclick="addNewObject(this)">Agregar Objeto</button>
-                    </td>
-                    <td>
                         <div class="object-list"></div>
                     </td>
                 `;
@@ -75,43 +63,20 @@
         function addNewObject(button) {
             const objectName = prompt("Ingrese el nombre del nuevo objeto:");
             if (objectName) {
-                const row = button.closest('tr');
+                const row = button.closest('td');
                 const objectList = row.querySelector('.object-list');
-
                 const newObjectDiv = document.createElement('div');
-                newObjectDiv.classList.add('mb-3'); // Margen inferior para separación
+                newObjectDiv.classList.add('mb-3');
                 newObjectDiv.innerHTML = `
                     <div>
                         <input type="file" accept="image/*" onchange="previewImage(event, this)" class="form-control mb-2">
                         <div class="image-preview mb-2"></div>
-                        <span style="cursor: pointer;" onclick="addAttributes(this)">${objectName}
-                            <button class="btn btn-secondary btn-sm" onclick="modifyAttributes(event, this)">+</button>
+                        <span>${objectName}
                             <button class="btn btn-danger btn-sm" onclick="deleteObject(this)">-</button>
                         </span>
                     </div>
                 `;
                 objectList.appendChild(newObjectDiv);
-            }
-        }
-
-        function addAttributes(cell) {
-            const attributes = prompt("Ingrese los atributos separados por comas (ej. color: rojo, tamaño: grande):");
-            if (attributes) {
-                const attributesList = attributes.split(',').map(attr => attr.trim()).join('<br>');
-                const attributesCell = document.createElement('div');
-                attributesCell.innerHTML = attributesList;
-                cell.appendChild(attributesCell);
-            }
-        }
-
-        function modifyAttributes(event, button) {
-            event.stopPropagation(); // Evitar que se dispare el evento de clic en la celda
-            const cell = button.parentElement;
-            const currentAttributes = Array.from(cell.querySelectorAll('div')).map(div => div.innerHTML).join(', ');
-            const newAttributes = prompt("Agregar atributos:", currentAttributes);
-            if (newAttributes) {
-                cell.innerHTML = cell.innerHTML.split('<button')[0]; // Limpiar atributos existentes
-                cell.innerHTML = `${cell.innerHTML}<div>${newAttributes.split(',').map(attr => attr.trim()).join('<br>')}</div>`;
             }
         }
 
