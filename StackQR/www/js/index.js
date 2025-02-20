@@ -51,3 +51,39 @@ function previewImage(event, input) {
         reader.readAsDataURL(file);
     }
 }
+
+function searchFolder() {
+    const searchQuery = prompt("Ingrese el nombre de la carpeta a buscar:");
+    if (searchQuery) {
+        const rows = document.querySelectorAll('#table-body tr');
+        let found = false;
+        rows.forEach(row => {
+            const folderCell = row.cells[0];
+            if (folderCell && folderCell.textContent.trim().toLowerCase() === searchQuery.toLowerCase()) {
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                folderCell.style.backgroundColor = "yellow";
+                setTimeout(() => folderCell.style.backgroundColor = "", 2000);
+                found = true;
+            }
+        });
+        if (!found) {
+            alert("Carpeta no encontrada.");
+        }
+    }
+}
+
+const data = null;
+
+const xhr = new XMLHttpRequest();
+xhr.withCredentials = false;
+
+xhr.addEventListener("readystatechange", function () {
+    if (this.readyState === this.DONE) {
+    console.log(this.responseText);
+    const dogImage = JSON.parse(this.responseText).message;
+    document.getElementById('dogImage').src = dogImage;
+    }
+});
+
+xhr.open("GET", "https://dog.ceo/api/breeds/image/random");
+xhr.send(data);

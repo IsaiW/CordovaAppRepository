@@ -18,7 +18,7 @@
             </a>
             <ul class="nav justify-content-end">
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><img src="img/icons/search.svg" alt="search" width="23" height="24"></a>
+                    <a class="nav-link" href="#" onclick="searchFolder()"><img src="img/icons/search.svg" alt="search" width="23" height="24"></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" onclick="scanQRCode()"><img src="img/icons/qr.svg" alt="QR" width="23" height="24"></a>
@@ -45,7 +45,9 @@
                         <td class="text-center">
                             <button class="btn btn-primary" onclick="addNewFolder()">Crear Carpeta</button>
                         </td>
-                        <td></td>
+                        <td>
+                            <img id="dogImage" alt="Imagen de Perro" width="100">
+                        </td>
                     </tr>
                 </tbody>
             </table>
