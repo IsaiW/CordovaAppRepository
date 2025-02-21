@@ -11,6 +11,7 @@ function addNewFolder(folderName) {
         `;
         tableBody.appendChild(newRow);
         
+        
         // Agregar carpeta al select del modal
         const folderSelect = document.getElementById('folderSelect');
         const newOption = document.createElement('option');
