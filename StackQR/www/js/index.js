@@ -1,3 +1,33 @@
+//Funcion para traer vistas e incrustarlos en elementos
+function loadView (viewName, IdElement = null, isAppend = false) {
+    $.ajax({
+        url: 'views/' + viewName + '.html',
+        type: 'GET',
+        success: function (response) {
+            IdElement === null ? console.error ('Elemento contenedor (IdElement) no definido') : (isAppend ? $ ('#' + IdElement).append(response) : $ ('#' + IdElement).html(response));
+        },
+        error: function (xhr, status, error) {
+            console.error ('Error al cargar la vista parcial: ' + error);
+        }
+});
+}
+//Funcion que pide una imagen dentro del formulario de item-objeto
+function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const container = document.getElementById('itemImg');
+            container.style.backgroundImage = `url(${e.target.result})`;
+            container.style.backgroundSize = "cover";
+            container.style.backgroundPosition = "center";
+            container.innerHTML = ""; // Quita el ícono
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+
 function addNewFolder() {
     const folderName = prompt("Ingrese el nombre de la nueva carpeta:");
     if (folderName) {

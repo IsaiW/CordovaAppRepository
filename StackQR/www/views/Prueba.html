@@ -1,39 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link rel="stylesheet" href="css/style.css"> <!--bootstrap-->
- <title>Document</title>
-</head>
-<body>
- 
- <style>
-  #itemImg {
-          background-color: rgb(176, 172, 172);
-          height: 12.5rem;
-          cursor: pointer;
-}         
 
-.add-btn {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background-color: rgb(10, 10, 126);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 24px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-        }
-</style>
 
 
 <!-- boton flotante -->
-<button class="add-btn" data-bs-toggle="modal" data-bs-target="#addItemModal">+</button> <!-- Agregar icon -->
+<button class="add-btn" data-bs-toggle="modal" data-bs-target="#addItemModal"><img src="img/icons/agregar.svg" alt=""></button> <!-- Agregar icon -->
 
 <!-- Modal del boton flotante-->
 <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
@@ -137,27 +106,3 @@
   </div>
   </div>
 
-
-<script>
-function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const container = document.getElementById('itemImg');
-            container.style.backgroundImage = `url(${e.target.result})`;
-            container.style.backgroundSize = "cover";
-            container.style.backgroundPosition = "center";
-            container.innerHTML = ""; // Quita el ícono
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-</script>
-
-
-<script src="public/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <!--bootstrap js-->
-<script src="cordova.js"></script>
-</body>
-</html>

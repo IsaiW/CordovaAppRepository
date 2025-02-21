@@ -26,4 +26,30 @@ body {
     /* text-transform:uppercase; */
 }
 
+#itemImg {
+background-color: rgb(176, 172, 172);
+height: 12.5rem;
+cursor: pointer;
+}         
 
+/* boton flotante */
+.add-btn {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: auto;         /* Cambia a auto para ajustarse al tamaño de la imagen */
+    height: auto;        /* Cambia a auto para ajustarse al tamaño de la imagen */
+    background-color: transparent; /* Elimina el fondo */
+    color: transparent;  /* Elimina el color */
+    border: none;        /* Elimina el borde */
+    padding: 0;          /* Elimina el padding */
+    cursor: pointer;
+}
+
+/* Ajustes del icon para el boton flotante */
+.add-btn img {
+width: 50px;  /* Ajusta según sea necesario */
+height: 50px; /* Ajusta según sea necesario */
+display: block;  /* Asegúrate de que el elemento sea un bloque */
+margin: auto;    /* Centra el icono dentro del botón */
+}
