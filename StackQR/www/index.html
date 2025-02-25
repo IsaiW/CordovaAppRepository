@@ -15,49 +15,16 @@
 </head>
 <body>
 
-    
     <div id="id_navbar"></div> <!--navbar invocado con la funciom loadView-->
     <div id="id_forms"></div>
-    <nav class="navbar navbar-dark align-items-center fixed-top bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand h1" href="#">
-                <img src="img/guts.jpg" alt="Logo" width="35" height="29" class="logo d-inline-block align-text-top"> 
-                StackQR
-            </a>
-            <ul class="nav justify-content-end">
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="searchFolder()"><img src="img/icons/search.svg" alt="search" width="23" height="24"></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="scanQRCode()"><img src="img/icons/qr.svg" alt="QR" width="23" height="24"></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><img src="img/icons/menu-dots-vertical.svg" alt="dots" width="23" height="24"></a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <!-- Aqui traeremos todos los inventarios -->
+    <div class="container-fluid" id="inventoryList"></div>
 
-    
-    <!-- Tabla de carpetas y objetos -->
-    <div class="container mt-5 pt-5">
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Carpetas</th>
-                        <th>Objetos</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                </tbody>
-            </table>
-        </div>
-    </div>
 
         <script src="public/node_modules/jquery/dist/jquery.min.js"></script>
         <script src="public/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <!--bootstrap js-->
         <script src="js/index.js"></script>
+        <script src="js/GET.js"></script> <!--funciones para hacer peticiones GET-->
         <script src="cordova.js"></script> <!--agregar en cada pagina nueva -->
         <script>
             loadView('nav', 'id_navbar');
