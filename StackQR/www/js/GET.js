@@ -10,7 +10,7 @@ fetch('https://jsonplaceholder.typicode.com/users') //Promeso que obtine los usu
         `<div class = "flex-column mb-3">
             <div class = "d-flex flex-row gap-3">
                 <div>
-                <img src="img/icons/carpeta.svg" style="width: 80px; height: 80px;" alt=""> 
+                <img src="img/icons/carpeta.svg" style="width: 80px; height: 80px;" alt="" data-id="${user.id}"> 
                 </div>
                 
                 <div class= "bg-secondary flex-grow-1">
