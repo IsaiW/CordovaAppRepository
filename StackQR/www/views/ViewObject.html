@@ -1,0 +1,21 @@
+<!-- Modal para mostrar los detalles del objeto -->
+<div class="modal fade" id="objectModal" tabindex="-1" aria-labelledby="objectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="objectModalLabel">Detalles del Objeto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <!-- Imagen del objeto seleccionado -->
+                <img id="objectImage" src="" alt="Imagen del objeto" class="img-fluid rounded mb-3" style="max-height: 200px;">
+                <!-- Nombre del objeto -->
+                <h3 id="objectName" class="text-primary"></h3>
+                <!-- Cantidad disponible del objeto -->
+                <p><strong>Cantidad:</strong> <span id="objectQuantity" class="badge bg-secondary"></span></p>
+                <!-- Descripción del objeto -->
+                <p id="objectDescription" class="text-muted"></p>
+            </div>
+        </div>
+    </div>
+</div>

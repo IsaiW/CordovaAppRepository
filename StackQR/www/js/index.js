@@ -86,7 +86,7 @@ function previewImage(event, input) {
 function searchFolder() {
     const searchQuery = prompt("Ingrese el nombre de la carpeta a buscar:");
     if (searchQuery) {
-        const rows = document.querySelectorAll('#table-body tr');
+        const rows = document.querySelectorAll('inventoryList');
         let found = false;
         rows.forEach(row => {
             const folderCell = row.cells[0];
@@ -101,4 +101,40 @@ function searchFolder() {
             alert("Carpeta no encontrada.");
         }
     }
+}
+
+/** Muestra los detalles de un objeto en una ventana modal. */
+
+function showObjectDetails(name, image, quantity, description) {
+    // Asigna los valores recibidos a los elementos del modal
+    document.getElementById('objectName').innerText = name;
+    document.getElementById('objectImage').src = image;
+    document.getElementById('objectQuantity').innerText = quantity;
+    document.getElementById('objectDescription').innerText = description;
+    
+    // Inicializa y muestra el modal de Bootstrap
+    var objectModal = new bootstrap.Modal(document.getElementById('objectModal'));
+    objectModal.show();
+}
+
+function generarQR() {
+    let nombre = document.getElementById("nombreItem").value.trim();
+    let cantidad = document.getElementById("cantidad").value.trim();
+    let notas = document.getElementById("notesItem").value.trim();
+
+    if (!nombre || !cantidad || !notas) {
+        alert("Por favor, completa todos los campos antes de generar el código QR.");
+        return;
+    }
+
+    // Formatear los datos como un texto JSON
+    let qrData = JSON.stringify({ nombre, cantidad, notas });
+
+    // Generar la URL del QR con la API
+    let qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrData)}&size=200x200`;
+
+    // Mostrar el QR en la imagen
+    let qrImage = document.getElementById("qrImage");
+    qrImage.src = qrUrl;
+    qrImage.style.display = "block"; // Mostrar la imagen del QR
 }
