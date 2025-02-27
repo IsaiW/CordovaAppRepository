@@ -5,7 +5,7 @@
 <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addItemModal"><img src="img/icons/agregar.svg" alt=""></button> <!-- Agregar icon -->
 
 <!-- Modal del boton flotante-->
-<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" inert-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -32,7 +32,7 @@
 <!-- Formulario para crear objeto -->
 
 <!-- Modal -->
-<div class="modal fade" id="crearItemModal" tabindex="-1" aria-labelledby="crearItemModalLabel" aria-hidden="true">
+<div class="modal fade" id="crearItemModal" tabindex="-1" aria-labelledby="crearItemModalLabel">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -41,7 +41,7 @@
       </div>
       <div class="modal-body">
         <!-- Formulario dentro del modal -->
-        <form onsubmit="event.preventDefault(); generarQR();">
+        <form id="object_form" onsubmit="event.preventDefault(); generarQR();">
           <!-- Petición de imagen -->
           <div class="text-center mb-3 d-flex justify-content-center">
             <div id="itemImg" class="bg-cover d-flex align-items-center justify-content-center text-muted w-100"
@@ -79,7 +79,7 @@
 
   
   <!-- Modal -->
-  <div class="modal fade" id="crearInventory" tabindex="-1" aria-labelledby="crearInventoryModalLabel" aria-hidden="true">
+  <div class="modal fade" id="crearInventory" tabindex="-1" aria-labelledby="crearInventoryModalLabel">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -90,17 +90,17 @@
   
         <!-- Formulario dentro del modal -->
         
-        <form>
+        <form id="inventory_form">
           <div class="mb-3">
             <!-- <label for="nombreInventory" class="form-label">Nombre del ítem</label> -->
-            <input type="text" class="form-control form-control-lg" id="nombreInventory" placeholder = "Agregar nombre del inventario" required>
+            <input name="name" type="text" class="form-control form-control-lg" placeholder = "Agregar nombre del inventario" required>
           </div>
 
           <div class="mb-3">
-            <textarea class="form-control form-control-sm" id="notesItem" rows="3"  placeholder = "Agregar descripción" required></textarea>
+            <input name="description" type="text" class="form-control form-control-sm" placeholder = "Agregar descripción del inventario" required>
           </div>
 
-          <button type="submit" class="btn btn-primary w-100">Generar QR</button>
+          <button id="crearInventorybtn" type="submit" class="btn btn-primary w-100">Crear</button>
         </form>
       </div>
     </div>

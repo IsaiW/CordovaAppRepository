@@ -25,21 +25,25 @@
 <body>
 
     <div id="id_navbar"></div> <!--navbar invocado con la funciom loadView-->
-    <div id="id_forms"></div>
+    <div id="id_forms"></div> <!--formulario dentro de modals invocado con la funciom loadView-->
     <div id="id_view"></div>
     <!-- Aqui traeremos todos los inventarios -->
     <div class="container-fluid" id="inventoryList"></div>
 
 
-        <script src="public/node_modules/jquery/dist/jquery.min.js"></script> <!--jquery js para la funcion loadview-->
-        <script src="public/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <!--bootstrap js-->
-        <script src="js/index.js"></script>
-        <script src="js/GET.js"></script> <!--funciones para hacer peticiones GET-->
-        <script src="cordova.js"></script> <!--agregar en cada pagina nueva -->
-        <script>
-            loadView('nav', 'id_navbar');
-            loadView('prueba', 'id_forms');
-            // loadView('ViewObject', 'id_view');
+
+    
+    <script src="public/node_modules/jquery/dist/jquery.min.js"></script> <!--jquery js para la funcion loadview-->
+    <script src="public/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <!--bootstrap js-->
+    <script src="js/index.js"></script>
+    <script>
+        loadView('nav', 'id_navbar');
+        loadView('forms', 'id_forms');
+        // loadView('ViewObject', 'id_view');
         </script>
+
+<script src="js/GET.js"></script> <!--funciones para hacer peticiones GET-->
+<script src="js/POST.JS"></script> <!--funciones para hacer peticiones POST-->
+        <script src="cordova.js"></script> <!--agregar en cada pagina nueva -->
     </body>
 </html>

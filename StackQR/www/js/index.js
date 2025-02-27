@@ -1,31 +1,39 @@
-//Funcion para traer vistas e incrustarlos en elementos
-function loadView (viewName, IdElement = null, isAppend = false) {
+// Función para traer vistas e incrustarlas en elementos, con callback opcional
+function loadView(viewName, IdElement = null, isAppend = false, callback = () => {}) {
     $.ajax({
         url: 'views/' + viewName + '.html',
         type: 'GET',
         success: function (response) {
-            IdElement === null ? console.error ('Elemento contenedor (IdElement) no definido') : (isAppend ? $ ('#' + IdElement).append(response) : $ ('#' + IdElement).html(response));
+            if (IdElement === null) {
+                console.error('Elemento contenedor (IdElement) no definido');
+            } else {
+                isAppend 
+                  ? $('#' + IdElement).append(response) 
+                  : $('#' + IdElement).html(response);
+                callback(); // Ejecuta el callback una vez que la vista se ha cargado
+            }
         },
         error: function (xhr, status, error) {
-            console.error ('Error al cargar la vista parcial: ' + error);
+            console.error('Error al cargar la vista parcial: ' + error);
         }
-});
+    });
 }
-//Funcion que pide una imagen dentro del formulario de item-objeto
-function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const container = document.getElementById('itemImg');
-            container.style.backgroundImage = `url(${e.target.result})`;
-            container.style.backgroundSize = "cover";
-            container.style.backgroundPosition = "center";
-            container.innerHTML = ""; // Quita el ícono
-        };
-        reader.readAsDataURL(file);
-    }
-}
+
+//Funcion que pide una imagen dentro del formulario de item-objeto (Arreglar)
+// function previewImage(event) {
+//     const file = event.target.files[0];
+//     if (file) {
+//         const reader = new FileReader();
+//         reader.onload = function(e) {
+//             const container = document.getElementById('itemImg');
+//             container.style.backgroundImage = `url(${e.target.result})`;
+//             container.style.backgroundSize = "cover";
+//             container.style.backgroundPosition = "center";
+//             container.innerHTML = ""; // Quita el ícono
+//         };
+//         reader.readAsDataURL(file);
+//     }
+// }
 
 
 function addNewFolder() {
