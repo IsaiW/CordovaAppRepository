@@ -3,7 +3,7 @@ loadView('forms', 'id_forms', false, () => {
     const formEl = document.getElementById("inventory_form");
     if (formEl) {
         formEl.addEventListener('submit', submitHandler);
-        // console.log("Listener agregado al formulario inventory_form");
+        console.log("Listener agregado al formulario inventory_form");
     } else {
         console.error("El formulario inventory_form no se encontró en el DOM.");
     }
@@ -21,8 +21,8 @@ function submitHandler(event) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     })
-    // .then(res => res.json())
-    // .then(data => console.log(data))
+    .then(res => res.json())
+    .then(data => console.log(data))
     .catch(error => console.error("Error:", error))
     .finally(() => {
         submitButton.disabled = false;
