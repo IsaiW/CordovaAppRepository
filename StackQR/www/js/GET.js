@@ -1,7 +1,6 @@
 let inventoryHTML = '';
 const itemsCache = {}; // Almacenará el HTML de cada inventario por ID
 
-//Este script utiliza una API diferente para utilizarla como pruebas.
 //Muy probablemente lo convierte en async/await.
 fetch('https://stackqr.bsite.net/api/inventories') //Promeso que obtine los usuarios de la api
 .then(response => { //Agarra la promeso o respuesta
