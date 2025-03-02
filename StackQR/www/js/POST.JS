@@ -1,22 +1,22 @@
 //De momento es necesario tenerlo en esta archivo pero talvez se pueda mover a otro archivo mas adelante
 //Esto permite que la vista se cargue la vista en el DOM antes de que se ejecute la función
 loadView('forms', 'id_forms', false, () => {
-    const formEl = document.getElementById("inventory_form");
+    const formEl = document.getElementById("inventory_form")
     if (formEl) {
-        formEl.addEventListener('submit', submitHandler);
-        console.log("Listener agregado al formulario inventory_form");
+        formEl.addEventListener('submit', submitHandler)
+        console.log("Listener agregado al formulario inventory_form")
     } else {
-        console.error("El formulario inventory_form no se encontró en el DOM.");
+        console.error("El formulario inventory_form no se encontró en el DOM.")
     }
 });
 
 // ===== Formulario para crear inventario =====//
 function submitHandler(event) {
-    event.preventDefault();
-    const submitButton = event.target.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-    const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData);
+    event.preventDefault()
+    const submitButton = event.target.querySelector('button[type="submit"]')
+    submitButton.disabled = true
+    const formData = new FormData(event.target)
+    const data = Object.fromEntries(formData)
 
     fetch("https://stackqr.bsite.net/api/inventories", {
         method: "POST",
@@ -41,13 +41,13 @@ function submitHandler(event) {
             </div>`;
 
         // Inserta el nuevo inventario en la lista sin recargar la página
-        document.getElementById('inventoryList').insertAdjacentHTML('beforeend', newInventoryHTML);
+        document.getElementById('inventoryList').insertAdjacentHTML('beforeend', newInventoryHTML)
     })
     .catch(error => console.error("Error:", error))
     .finally(() => {
-        submitButton.disabled = false;
-        const modalInstance = bootstrap.Modal.getInstance(document.getElementById("crearInventory"));
-        if (modalInstance) modalInstance.hide();
+        submitButton.disabled = false
+        const modalInstance = bootstrap.Modal.getInstance(document.getElementById("crearInventory"))
+        if (modalInstance) modalInstance.hide()
     });
 }
 
