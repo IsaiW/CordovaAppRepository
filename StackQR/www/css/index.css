@@ -19,10 +19,10 @@
 
 body {
 
-    margin:0px;
-    padding:0px;
+margin:0px;
+padding:0px;
     /* Padding to avoid the "unsafe" areas behind notches in the screen */
-    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
     /* text-transform:uppercase; */
 }
 
@@ -39,16 +39,16 @@ margin-top: 5rem;
 
 /* boton flotante */
 .add-btn {
-    bottom: 80px;
-    right: 20px;
-    width: auto;         
-    height: auto;       
-    background-color: transparent; 
-    color: transparent;  
-    border: none;        
-    padding: 0;          
-    cursor: pointer;
-    z-index: 1000;
+bottom: 80px;
+right: 20px;
+width: auto;         
+height: auto;       
+background-color: transparent; 
+color: transparent;  
+border: none;        
+padding: 0;          
+cursor: pointer;
+z-index: 1000;
 }
 
 /* Ajustes del icon para el boton flotante */
@@ -60,15 +60,27 @@ display: block;
 
 /* dropdown */
 .delete-btn, .dropdown-toggle::after {
-    all: unset; /* Elimina todos los estilos predeterminados */
-    display: none !important;
-    background-color: #3498db; 
-    color: white;
+all: unset; /* Elimina todos los estilos predeterminados */
+display: none !important;
+background-color: #3498db; 
+color: white;
 }
 
 .dropdown-menu a {
-    color: white;
+color: white;
 }
 .dropdown-menu a:hover {
-    background-color: #2980b9; 
+background-color: #2980b9; 
+}
+
+/* Los bordes de los contenedores */
+.border-top-bottom {
+border-top: .7px solid #dee2e6;  /* Color gris de Bootstrap */
+border-bottom: .7px solid #dee2e6;
+padding-top: 1rem;
+padding-bottom: 1rem;
+  }
+
+.whithe-color,h3, p{
+color: #dde9f3;
 }

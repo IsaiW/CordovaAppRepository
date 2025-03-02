@@ -12,18 +12,18 @@ fetch('https://stackqr.bsite.net/api/inventories') //Promeso que obtine los usua
 
         // Crear la estructura HTML con la información del inventario
         const name =`
-        <div class="flex-column mb-3 d-flex gap-3" id="inventory-${inventory.id_inventory}">
+        <div class="flex-column mb-3 d-flex gap-3 border-top-bottom" id="inventory-${inventory.id_inventory}">
           <div class="d-flex gap-3">
             <div>
-              <img src="img/icons/carpeta.svg" 
+              <img src="img/icons/folder.svg" 
                    style="width: 80px; height: 80px;" 
                    alt="${inventory.name}" 
                    data-id="${inventory.id_inventory}">
             </div>
-            <div class="bg-secondary flex-grow-1">
+            <div class="flex-grow-1">
               <div class="justify-content-between d-flex">
                 <div class="flex-shrink-1">
-                  <h3>${inventory.name}</h3>
+                  <h3 class = "whithe-color">${inventory.name}</h3>
                 </div>
                 <div class="dropdown">
                   <button type="button"
