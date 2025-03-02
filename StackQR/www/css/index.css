@@ -39,7 +39,6 @@ margin-top: 5rem;
 
 /* boton flotante */
 .add-btn {
-    position: fixed;
     bottom: 80px;
     right: 20px;
     width: auto;         
@@ -49,6 +48,7 @@ margin-top: 5rem;
     border: none;        
     padding: 0;          
     cursor: pointer;
+    z-index: 1000;
 }
 
 /* Ajustes del icon para el boton flotante */
@@ -56,5 +56,19 @@ margin-top: 5rem;
 width: 50px; 
 height: 50px; 
 display: block;  
-margin: auto;    
+}
+
+/* dropdown */
+.delete-btn, .dropdown-toggle::after {
+    all: unset; /* Elimina todos los estilos predeterminados */
+    display: none !important;
+    background-color: #3498db; 
+    color: white;
+}
+
+.dropdown-menu a {
+    color: white;
+}
+.dropdown-menu a:hover {
+    background-color: #2980b9; 
 }

@@ -10,7 +10,7 @@ loadView('forms', 'id_forms', false, () => {
     }
 });
 
-// Cochinero para el metodo POST para el formulario de crear inventario
+// ===== Formulario para crear inventario =====//
 function submitHandler(event) {
     event.preventDefault();
     const submitButton = event.target.querySelector('button[type="submit"]');

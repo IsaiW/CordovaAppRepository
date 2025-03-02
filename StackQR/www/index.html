@@ -32,6 +32,50 @@
 
 
 
+
+
+    <!-- Modal de Confirmación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          ¿Estás seguro de querer eliminar este inventario? Esta acción no se puede deshacer.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteButton">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x mt-3">
+        <!-- Toast de Éxito -->
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Éxito</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+          </div>
+          <div class="toast-body bg-light">
+            Operación completada correctamente.
+          </div>
+        </div>
+      
+        <!-- Toast de Error -->
+        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Error</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+          </div>
+          <div class="toast-body bg-light">
+            Ocurrió un error inesperado.
+          </div>
+        </div>
+      </div>
     
     <script src="public/node_modules/jquery/dist/jquery.min.js"></script> <!--jquery js para la funcion loadview-->
     <script src="public/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <!--bootstrap js-->
@@ -42,6 +86,7 @@
         // loadView('ViewObject', 'id_view');
         </script>
 
+<script src="js/DELETE.js"></script> <!--funciones para hacer peticiones DELETE-->
 <script src="js/GET.js"></script> <!--funciones para hacer peticiones GET-->
 <script src="js/POST.JS"></script> <!--funciones para hacer peticiones POST-->
         <script src="cordova.js"></script> <!--agregar en cada pagina nueva -->
