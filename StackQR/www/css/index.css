@@ -66,13 +66,6 @@ background-color: #3498db;
 color: white;
 }
 
-.dropdown-menu a {
-color: white;
-}
-.dropdown-menu a:hover {
-background-color: #2980b9; 
-}
-
 /* Los bordes de los contenedores */
 .border-top-bottom {
 border-top: .7px solid #dee2e6;  /* Color gris de Bootstrap */
@@ -81,7 +74,7 @@ padding-top: 1rem;
 padding-bottom: 1rem;
   }
 
-.whithe-color,h3, p{
+p{
 color: #dde9f3;
 }
 

@@ -1,24 +1,24 @@
 let inventoryHTML = ''
-const itemsCache = {}; // Almacenará el HTML de cada inventario por ID
-
+const itemsCache = {} // Almacenará el HTML de cada inventario por ID
+let currentSection = 'inventarios'
 
 // ===== Inventarios =====//
 fetch('https://stackqr.bsite.net/api/inventories') //Promeso que obtine los usuarios de la api
-.then(response => { //Agarra la promeso o respuesta
-    return response.json() //Transforma en js. Esto tambien es una promesa
+.then(response => {
+    return response.json()
 }) 
-.then(data =>{ //Esto agarra la promesa anterior
+.then(data =>{
     data.forEach(inventory => { //Loop que pasa por cada usuario y lo almacena en user
 
         // Crear la estructura HTML con la información del inventario
         const name =`
-        <div class="flex-column mb-3 d-flex gap-3 border-top-bottom" id="inventory-${inventory.id_inventory}">
+        <div class="flex-column mb-3 d-flex gap-3 border-top-bottom inventory-parent" id="inventory-${inventory.id_inventory}">
     <div class="d-flex gap-3">
         <div>
             <img src="img/icons/folder.svg" 
-                  style="width: 80px; height: 80px;" 
-                  alt="${inventory.name}" 
-                  data-id="${inventory.id_inventory}">
+                    style="width: 80px; height: 80px;" 
+                    alt="${inventory.name}" 
+                    data-id="${inventory.id_inventory}">
         </div>
         
         <div class="flex-grow-1">
@@ -54,11 +54,12 @@ fetch('https://stackqr.bsite.net/api/inventories') //Promeso que obtine los usua
         </div>
     </div>
 </div>`;
-
 //El icon lo podemos cambiar despues
 
         document.getElementById('inventoryList').insertAdjacentHTML('beforeend', name) 
         // console.log(inventory)
+        currentSection = 'inventarios' // Actualizar estado
+        updateFloatingButton()        // Actualizar botón flotante
     })
 })
 .catch(error => {console.log(error)})
@@ -69,17 +70,17 @@ function renderItemsView(inventoryId) {
   fetch(`https://stackqr.bsite.net/api/objects/inventory/${inventoryId}`)
   .then(response => response.json())
   .then(objects => {
-      const container = document.getElementById('inventoryList')
-      container.innerHTML = ''
-      
-      const itemsHTML = objects.map(obj => `
-        <div class="flex-column mb-3 d-flex gap-3 border-top-bottom" id="item-${obj.id}">
+        const container = document.getElementById('inventoryList')
+        container.innerHTML = ''
+
+        const itemsHTML = objects.map(obj => `
+        <div class="flex-column mb-3 d-flex gap-3 border-top-bottom object-item" id="item-${obj.id}">
             <div class="d-flex gap-3">
                 <div>
                     <img src="${obj.image}" 
-                          style="width: 80px; height: 80px;" 
-                          alt="${obj.nombre}" 
-                          data-id="${obj.id}">
+                            style="width: 80px; height: 80px;" 
+                            alt="${obj.nombre}" 
+                            data-id="${obj.id}">
                 </div>
 
                 <div class="flex-grow-1">
@@ -111,57 +112,12 @@ function renderItemsView(inventoryId) {
             </div>
         </div>
     `)
-          .join('');
-      console.log(objects)
-      container.innerHTML = itemsHTML
-      itemsCache[inventoryId] = itemsHTML
-  })
-  .catch(error => console.log(error));
+        .join('');
+    //   console.log(objects)
+        container.innerHTML = itemsHTML
+        itemsCache[inventoryId] = itemsHTML
+        currentSection = 'objetos' // Actualizar estado
+        updateFloatingButton()    // Actualizar botón flotante
+})
+.catch(error => console.log(error))
 }
-
-// ===== Optimización de history y popstate =====//
-document.getElementById('inventoryList').addEventListener('click', function(e) {
-    const target = e.target;
-    if (target.tagName === 'IMG' && target.dataset.id) {
-        const invId = target.dataset.id;
-        // Usar caché si ya existe
-        if (itemsCache[invId]) {
-            history.pushState({ id: invId }, '', `?inv=${invId}`)
-            document.getElementById('inventoryList').innerHTML = itemsCache[invId]
-        } else {
-            // Guardar HTML actual antes de cambiar (para restauración rápida)
-            const currentHTML = document.getElementById('inventoryList').innerHTML
-            history.replaceState({ prevHTML: currentHTML }, '');
-            
-            // Renderizar y almacenar en caché después de cargar
-            renderItemsView(invId);
-            history.pushState({ id: invId }, '', `?inv=${invId}`);
-            
-            // Almacenar en caché cuando la carga termine (usando un observer)
-            const observer = new MutationObserver(() => {
-                itemsCache[invId] = document.getElementById('inventoryList').innerHTML
-                observer.disconnect();
-            });
-            observer.observe(document.getElementById('inventoryList'), {
-                childList: true,
-                subtree: true,
-            });
-        }
-    }
-});
-
-// Manejo optimizado de popstate
-window.onpopstate = function(event) {
-    if (event.state) {
-        if (event.state.prevHTML) { // Restaurar desde el estado anterior
-            document.getElementById('inventoryList').innerHTML = event.state.prevHTML
-        } else if (itemsCache[event.state.id]) { // Usar caché
-            document.getElementById('inventoryList').innerHTML = itemsCache[event.state.id]
-        } else { // Fallback: cargar desde API
-            renderItemsView(event.state.id)
-        }
-    } else { // Vista inicial
-        document.getElementById('inventoryList').innerHTML = inventoryHTML
-    }
-};
-

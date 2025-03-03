@@ -8,8 +8,8 @@ function loadView(viewName, IdElement = null, isAppend = false, callback = () =>
                 console.error('Elemento contenedor (IdElement) no definido');
             } else {
                 isAppend 
-                  ? $('#' + IdElement).append(response) 
-                  : $('#' + IdElement).html(response);
+                    ? $('#' + IdElement).append(response) 
+                    : $('#' + IdElement).html(response);
                 callback(); // Ejecuta el callback una vez que la vista se ha cargado
             }
         },
@@ -36,6 +36,69 @@ function loadView(viewName, IdElement = null, isAppend = false, callback = () =>
 // }
 
 
+
+// ===== Detectar si es inventario u objeto ===== //
+document.getElementById('inventoryList').addEventListener('click', function(e) {
+    const target = e.target;
+    
+    // INVENTARIO (padre)
+    if (target.closest('.inventory-parent')) {
+        const invId = target.dataset.id
+    }
+    
+    // OBJETO (hijo)
+    if (target.tagName === 'IMG' && target.dataset.id) {
+        // Bloquear navegación para objetos
+        if (target.closest('.object-item')) return
+        
+        const invId = target.dataset.id
+        if (itemsCache[invId]) {
+            history.pushState({ id: invId }, '', `?inv=${invId}`)
+            document.getElementById('inventoryList').innerHTML = itemsCache[invId]
+        } else {
+            const currentHTML = document.getElementById('inventoryList').innerHTML
+            history.replaceState({ prevHTML: currentHTML }, '')
+            
+            renderItemsView(invId)
+            history.pushState({ id: invId }, '', `?inv=${invId}`)
+            
+            const observer = new MutationObserver(() => {
+                itemsCache[invId] = document.getElementById('inventoryList').innerHTML
+                observer.disconnect();
+            })
+            observer.observe(document.getElementById('inventoryList'), { childList: true })
+        }
+    }
+})
+
+// ===== Popstate modificado ===== //
+window.onpopstate = function(event) {
+    const container = document.getElementById('inventoryList');
+    
+    if (event.state?.prevHTML) {
+        container.innerHTML = event.state.prevHTML;
+    } else if (event.state?.id && itemsCache[event.state.id]) {
+        container.innerHTML = itemsCache[event.state.id];
+    } else {
+        container.innerHTML = inventoryHTML;
+    }
+};
+
+// ===== Función para actualizar el botón flotante ===== //
+function updateFloatingButton() {
+    const createInventoryBtn = document.getElementById('crearInventarioBtn');
+    const createObjectBtn = document.getElementById('createObjectBtn');
+    
+    if (currentSection === 'inventarios') {
+        createInventoryBtn.style.display = 'block'; // Mostrar crear inventario
+        createObjectBtn.style.display = 'none';     // Ocultar crear objeto
+    } else if (currentSection === 'objetos') {
+        createInventoryBtn.style.display = 'none';  // Ocultar crear inventario
+        createObjectBtn.style.display = 'block';    // Mostrar crear objeto
+    }
+}
+
+// Agregado por Venegas
 function addNewFolder() {
     const folderName = prompt("Ingrese el nombre de la nueva carpeta:");
     if (folderName) {
@@ -125,8 +188,6 @@ function showObjectDetails(name, image, quantity, description) {
     objectModal.show();
 }
 
-
-// Agregado por Venegas
 // Función para crear el objeto, generar el QR y guardarlo
 function guardarItem() {
     let fileInput = document.getElementById('fileInput');
