@@ -125,24 +125,140 @@ function showObjectDetails(name, image, quantity, description) {
     objectModal.show();
 }
 
-function generarQR() {
-    let nombre = document.getElementById("nombreItem").value.trim();
-    let cantidad = document.getElementById("cantidad").value.trim();
-    let notas = document.getElementById("notesItem").value.trim();
 
-    if (!nombre || !cantidad || !notas) {
-        alert("Por favor, completa todos los campos antes de generar el código QR.");
+// Agregado por Venegas
+// Función para crear el objeto, generar el QR y guardarlo
+function guardarItem() {
+    let fileInput = document.getElementById('fileInput');
+    let nombre = document.getElementById('nombreItem').value;
+    let cantidad = document.getElementById('cantidad').value;
+    let notas = document.getElementById('notesItem').value;
+
+    if (!fileInput.files.length || !nombre || !cantidad || !notas) {
+        alert("Por favor, complete todos los campos.");
         return;
     }
 
-    // Formatear los datos como un texto JSON
-    let qrData = JSON.stringify({ nombre, cantidad, notas });
+    let reader = new FileReader();
+    reader.onload = function () {
+        let imageBase64 = reader.result;
 
-    // Generar la URL del QR con la API
-    let qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrData)}&size=200x200`;
+        // Crear el objeto con los datos
+        let item = {
+            image: imageBase64,
+            nombre: nombre,
+            cantidad: cantidad,
+            notas: notas
+        };
 
-    // Mostrar el QR en la imagen
-    let qrImage = document.getElementById("qrImage");
-    qrImage.src = qrUrl;
-    qrImage.style.display = "block"; // Mostrar la imagen del QR
+        // Convertir el objeto en JSON para el QR
+        let qrData = JSON.stringify({ nombre, cantidad, notas });
+
+        // Llamar a la función para agregar el objeto a la lista
+        agregarItemALista(item, qrData);
+
+        // Guardar en sessionStorage sin la imagen en Base64
+        guardarsessionStorage(item, qrData);
+    };
+
+    reader.readAsDataURL(fileInput.files[0]); // Leer la imagen como Base64
+}
+
+// Función para agregar solo el nombre del objeto a la lista
+function agregarItemALista(item, qrData) {
+    let inventoryList = document.getElementById("inventoryList");
+
+    // Crear el elemento de la lista
+    let itemElement = document.createElement("div");
+    itemElement.classList.add("list-group-item", "list-group-item-action");
+    itemElement.textContent = item.nombre;
+
+    // Agregar evento onclick para abrir el div-modal con los detalles
+    itemElement.onclick = function () {
+        mostrarDetallesEnDiv(item, qrData);
+    };
+
+    // Agregar el ítem a la lista
+    inventoryList.appendChild(itemElement);
+}
+
+// Función para mostrar los detalles en un div-modal
+function mostrarDetallesEnDiv(item, qrData) {
+    let modalDiv = document.getElementById("modalDiv");
+    let modalContent = document.getElementById("modalContent");
+    let qrContainer = document.getElementById("qrContainer");
+
+    // Asignar valores al modal
+    modalContent.innerHTML = `
+        <h2>${item.nombre}</h2>
+        <img src="${item.image}" class="img-fluid rounded mb-3" alt="Item Image">
+        <p><strong>Cantidad:</strong> ${item.cantidad}</p>
+        <p><strong>Notas:</strong> ${item.notas}</p>
+        <button class="close-btn" onclick="cerrarModal()">Cerrar</button>
+    `;
+
+    // Limpiar el contenedor antes de generar el QR (evita duplicados)
+    qrContainer.innerHTML = "";
+
+    // Generar el código QR dentro del div
+    generarQR(qrData, qrContainer);
+
+    // Mostrar el div-modal
+    modalDiv.style.display = "flex";
+}
+
+// Función para cerrar el modal
+function cerrarModal() {
+    document.getElementById("modalDiv").style.display = "none";
+}
+
+// Función para generar el QR
+function generarQR(texto, contenedor) {
+    if (!texto || !contenedor) {
+        console.error("Datos insuficientes para generar el código QR.");
+        return;
+    }
+
+    new QRCode(contenedor, {
+        text: texto,
+        width: 150,
+        height: 150
+    });
+}
+
+// Función para guardar en sessionStorage sin la imagen Base64
+function guardarsessionStorage(item, qrData) {
+    let inventario = JSON.parse(sessionStorage.getItem("inventario")) || [];
+
+    let itemSinImagen = {
+        nombre: item.nombre,
+        cantidad: item.cantidad,
+        notas: item.notas,
+        qrData: qrData
+    };
+
+    inventario.push(itemSinImagen);
+
+    try {
+        sessionStorage.setItem("inventario", JSON.stringify(inventario));
+    } catch (error) {
+        console.error("No se pudo guardar en sessionStorage: almacenamiento lleno.");
+        alert("El almacenamiento está lleno. No se pudo guardar el ítem.");
+    }
+}
+
+
+// Función para previsualizar la imagen seleccionada
+function previewImage(event) {
+    let file = event.target.files[0]; // Obtener el archivo seleccionado
+    let reader = new FileReader();
+
+    reader.onload = function() {
+        let previewImg = document.getElementById("previewImg");
+        previewImg.src = reader.result; // Asignar la imagen al preview
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
 }

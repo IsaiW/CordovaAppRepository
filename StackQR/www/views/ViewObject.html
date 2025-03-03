@@ -1,21 +1,47 @@
-<!-- Modal para mostrar los detalles del objeto -->
-<div class="modal fade" id="objectModal" tabindex="-1" aria-labelledby="objectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="objectModalLabel">Detalles del Objeto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <!-- Imagen del objeto seleccionado -->
-                <img id="objectImage" src="" alt="Imagen del objeto" class="img-fluid rounded mb-3" style="max-height: 200px;">
-                <!-- Nombre del objeto -->
-                <h3 id="objectName" class="text-primary"></h3>
-                <!-- Cantidad disponible del objeto -->
-                <p><strong>Cantidad:</strong> <span id="objectQuantity" class="badge bg-secondary"></span></p>
-                <!-- Descripción del objeto -->
-                <p id="objectDescription" class="text-muted"></p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Objeto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/StackQR/www/css/viewObject.css">
+</head>
+<body>
+    <!-- Botón para abrir el modal (solo como ejemplo) -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
+        Ver Detalles
+    </button>
+    
+    <!-- Modal de Bootstrap -->
+    <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="objectModalLabel">Detalles del Objeto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="objectImage" src="" alt="Imagen del objeto" class="img-fluid rounded shadow mb-3">
+                    <h3 id="objectName">Nombre del objeto</h3>
+                    <p><strong>Cantidad:</strong> <span id="objectQuantity">0</span></p>
+                    <p id="objectDescription">Descripción del objeto</p>
+                    <h5>Código QR:</h5>
+                    <img id="objectQR" src="" style="width: 150px; height: 150px;" alt="Código QR">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
+
+</body>
+</html>

@@ -28,24 +28,22 @@
 
 <!-- Formulario para crear objeto -->
 
-<!-- Modal -->
-<div class="modal fade" id="crearItemModal" tabindex="-1" aria-labelledby="crearItemModalLabel">
+<div class="modal fade" id="crearItemModal" tabindex="-1" aria-labelledby="crearItemModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="" id="">Crear nuevo ítem</h5>
+        <h5 class="modal-title">Crear nuevo ítem</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
         <!-- Formulario dentro del modal -->
-        <form id="object_form" onsubmit="event.preventDefault(); generarQR();">
-          <!-- Petición de imagen -->
-          <div class="text-center mb-3 d-flex justify-content-center">
-            <div id="itemImg" class="bg-cover d-flex align-items-center justify-content-center text-muted w-100"
-                onclick="document.getElementById('fileInput').click()">
-                <img class="" src="img/icons/anadir-imagen.svg" alt="search" width="50" height="50">
+        <form id="itemForm">
+          <!-- Cargar imagen -->
+          <div class="text-center mb-3">
+            <div id="itemImgContainer" class="image-container" onclick="document.getElementById('fileInput').click()">
+              <img id="previewImg" src="img/icons/anadir-imagen.svg" alt="Añadir imagen">
             </div>
-            <input type="file" id="fileInput" class="d-none img-fluid" accept=".png, .jpg, .jpeg" onchange="previewImage(event)">
+            <input type="file" id="fileInput" class="d-none" accept=".png, .jpg, .jpeg" onchange="previewImage(event)">
           </div>
 
           <div class="mb-3">
@@ -53,14 +51,14 @@
           </div>
 
           <div class="mb-3">
-            <input type="text" style="height: 3.2rem;" class="form-control form-control-sm w-25" id="cantidad" placeholder="Cantidad" required>
+            <input type="number" class="form-control form-control-sm w-100" id="cantidad" placeholder="Cantidad" required>
           </div>
 
           <div class="mb-3">
             <textarea class="form-control form-control-sm" id="notesItem" rows="3" placeholder="Agregar nota" required></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary w-100">Generar QR</button>
+          <button type="button" class ="btn btn-primary w-100" onclick="guardarItem()">Guardar</button>
         </form>
 
         <!-- Espacio para mostrar el QR -->

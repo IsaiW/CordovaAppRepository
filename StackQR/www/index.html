@@ -29,10 +29,17 @@
     <div id="id_view"></div>
     <!-- Aqui traeremos todos los inventarios -->
     <div class="container-fluid" id="inventoryList"></div>
+    <!-- Lista donde se mostrarán los nombres de los objetos -->
+    <div id="inventoryList" class="list-group"></div>
 
-
-
-
+    <!--Agregado por Venegas-->
+    <!-- Modal tipo div oculto por defecto -->
+    <div id="modalDiv" class="modal-div">
+        <div class="modal-content">
+            <div id="modalContent"></div>
+            <div id="qrContainer" class="text-center"></div>
+        </div>
+    </div>
 
     <!-- Modal de Confirmación -->
   <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="false">
@@ -76,9 +83,12 @@
           </div>
         </div>
       </div>
+
+
     
     <script src="public/node_modules/jquery/dist/jquery.min.js"></script> <!--jquery js para la funcion loadview-->
     <script src="public/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <!--bootstrap js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="js/index.js"></script>
     <script>
         loadView('nav', 'id_navbar');
