@@ -59,7 +59,7 @@ display: block;
 }
 
 /* dropdown */
-.delete-btn, .dropdown-toggle::after {
+.btn_sty, .dropdown-toggle::after {
 all: unset; /* Elimina todos los estilos predeterminados */
 display: none !important;
 background-color: #3498db; 
