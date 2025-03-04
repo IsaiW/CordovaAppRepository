@@ -34,10 +34,11 @@ fetch('https://stackqr.bsite.net/api/inventories') //Promeso que obtine los usua
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                             data-id="${inventory.id_inventory}">
-                        🗑️
+                        <img src="img/icons/dots-vertical.svg" 
+                        style="width: 1.5rem; height: 1.5rem;" >
                     </button>
                     
-                    <ul class="dropdown-menu bg-dark" 
+                    <ul class="dropdown-menu" 
                         aria-labelledby="dropdownMenuButton">
                         <li>
                             <button class="dropdown-item editar">Editar</button>
@@ -104,8 +105,8 @@ function renderItemsView(inventoryId) {
                                             aria-expanded="false">
                                         🗑️
                                     </button>
-                                    <ul class="dropdown-menu bg-dark">
-                                        <li><button class="dropdown-item editar">Editar</button></li>
+                                    <ul class="dropdown-menu">
+                                        <li><button class="dropdown-item editar_objeto">Editar</button></li>
                                         <li><button class="dropdown-item eliminar_objeto" data-id="${obj.id}">Eliminar</button></li>
                                     </ul>
                                 </div>

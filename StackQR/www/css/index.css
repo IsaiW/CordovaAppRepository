@@ -58,17 +58,14 @@ height: 50px;
 display: block;  
 }
 
-/* dropdown */
-.btn_sty, .dropdown-toggle::after {
-all: unset; /* Elimina todos los estilos predeterminados */
+/* dropdown. De alguna manera empuja el boton a la derecha */
+.dropdownCustom, .dropdown-toggle::after {
 display: none !important;
-background-color: #3498db; 
-color: white;
 }
 
 /* Los bordes de los contenedores */
 .border-top-bottom {
-border-top: .7px solid #dee2e6;  /* Color gris de Bootstrap */
+border-top: .7px solid #dee2e6;  
 border-bottom: .7px solid #dee2e6;
 padding-top: 1rem;
 padding-bottom: 1rem;
@@ -80,8 +77,8 @@ color: #dde9f3;
 
 /* Agregado por Venegas*/
 .image-container {
-    width: 100%; /* Ajustar al ancho del contenedor */
-    max-width: 200px; /* Máximo tamaño */
+    width: 100%; 
+    max-width: 200px; 
     height: 200px; /* Altura fija */
     border: 2px dashed #ccc; /* Borde de referencia */
     display: flex;
