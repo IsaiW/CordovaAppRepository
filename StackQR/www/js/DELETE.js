@@ -2,7 +2,7 @@
 document.addEventListener('click', async (e) => {
   if (e.target.classList.contains('eliminar')) {
     const id = e.target.dataset.id
-    const inventoryName = e.target.closest('.flex-column').querySelector('h3').textContent
+    const inventoryName = e.target.closest('.flex-column').querySelector('h4').textContent
 
     // Configuracion de modal de confirmación este se encuentra en el index.html
     const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'))
