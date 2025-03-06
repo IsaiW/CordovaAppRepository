@@ -74,17 +74,24 @@ document.getElementById('inventoryList').addEventListener('click', function(e) {
 // ===== Popstate modificado ===== //
 window.onpopstate = function(event) {
     const container = document.getElementById('inventoryList');
-    
-    if (event.state?.prevHTML) {
-        container.innerHTML = event.state.prevHTML;
-    } else if (event.state?.id && itemsCache[event.state.id]) {
-        container.innerHTML = itemsCache[event.state.id];
-    } else {
-        container.innerHTML = inventoryHTML;
+    const urlParams = new URLSearchParams(window.location.search);
+    const invId = urlParams.get('inv');
+
+    // Caso 1: Volver a inventarios (URL sin ?inv=)
+    if (!invId) {
+        container.innerHTML = event.state?.prevHTML || inventoryHTML;
+        currentSection = 'inventarios'; // Forzar sección
+    } 
+    // Caso 2: Navegar a objetos (URL con ?inv=)
+    else {
+        container.innerHTML = itemsCache[invId] || inventoryHTML;
+        currentSection = 'objetos'; // Forzar sección
     }
+
+    updateFloatingButton(); // Actualizar botones siempre
 };
 
-// ===== Función para actualizar el botón flotante ===== //
+// ===== Función para actualizar el botón flotante cada que pasas de inventario a objetos =====//
 function updateFloatingButton() {
     const createInventoryBtn = document.getElementById('crearInventarioBtn');
     const createObjectBtn = document.getElementById('createObjectBtn');

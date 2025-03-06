@@ -41,7 +41,7 @@ function submitHandler(event) {
         <div class="flex-grow-1">
             <div class="justify-content-between d-flex">
                 <div class="flex-shrink-1">
-                    <h3 class="whithe-color">${inventory.name}</h3>
+                    <h4 class="whithe-color">${inventory.name}</h4>
                 </div>
                 
                 <div class="dropdown">

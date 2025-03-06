@@ -108,7 +108,8 @@ color: #dde9f3;
     align-items: center;
 }
 
-.modal-content {
+/* esto causa problemas */
+/* .modal-content {
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -116,7 +117,7 @@ color: #dde9f3;
     width: 80%;
     max-width: 400px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
+} */
 
 .close-btn {
     background: #ff4d4d;

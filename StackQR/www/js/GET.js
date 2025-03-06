@@ -2,6 +2,19 @@ let inventoryHTML = ''
 const itemsCache = {} // Almacenará el HTML de cada inventario por ID
 let currentSection = 'inventarios'
 
+document.getElementById('inventoryList').addEventListener('click', function(e) {
+    const target = e.target;
+    if (target.tagName === 'IMG' && target.dataset.id) {
+        const invId = target.dataset.id;
+        
+        // Actualizar sección y botones INMEDIATAMENTE
+        currentSection = 'objetos';
+        updateFloatingButton();
+
+        // Resto de tu lógica para cargar objetos...
+    }
+});
+
 // ===== Inventarios =====//
 fetch('https://stackqr.bsite.net/api/inventories') //Promeso que obtine los usuarios de la api
 .then(response => {
@@ -116,7 +129,7 @@ function renderItemsView(inventoryId) {
                     
                     <!-- Modal específico para este objeto -->
                     <div class="modal fade" id="objeto-descripcion-${obj.id}" tabindex="-1" aria-labelledby="objetoDescripcion" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h1 class="modal-title fs-5">${obj.name}</h1>
