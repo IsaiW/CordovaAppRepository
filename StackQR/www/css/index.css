@@ -67,13 +67,34 @@ display: none !important;
 .border-top-bottom {
 border-top: .7px solid #dee2e6;  
 border-bottom: .7px solid #dee2e6;
+}
+
+.pad {
 padding-top: 1rem;
 padding-bottom: 1rem;
-  }
+}
 
-p{
+/* Propiedades para un input */
+.custom-input {
+all: unset; 
+width: 6rem;
 color: #dde9f3;
 }
+
+.custom-input[type="number"]::-webkit-outer-spin-button,
+.custom-input[type="number"]::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+
+p {
+color: #dde9f3be;
+}
+
+.color-w{
+color: #dde9f3;
+}
+
 
 /* Agregado por Venegas*/
 .image-container {
