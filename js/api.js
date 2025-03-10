@@ -33,6 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    document.getElementById("editInventoryModal").removeAttribute("aria-hidden");
+
     // Manejar el formulario de edición de inventario
     document.getElementById("editInventoryForm").addEventListener("submit", function (event) {
         event.preventDefault();
@@ -66,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
             Swal.fire("Éxito", "Inventario actualizado correctamente", "success");
             fetchInventories();
             let modal = bootstrap.Modal.getInstance(document.getElementById("editInventoryModal"));
+            document.getElementById("editInventoryModal").setAttribute("aria-hidden", "true");
             modal.hide();
         })
         .catch(error => {
@@ -82,12 +85,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Mostrar u ocultar la barra de búsqueda
     document.getElementById("toggleSearch").addEventListener("click", function () {
-    let searchBar = document.getElementById("searchBar");
-    searchBar.classList.toggle("search-hidden");
-    if (!searchBar.classList.contains("search-hidden")) {
-        searchBar.focus(); // Enfocar la barra de búsqueda al abrirla
-    }
-});
+        let searchBar = document.getElementById("searchBar");
+        searchBar.classList.toggle("search-hidden");
+        if (!searchBar.classList.contains("search-hidden")) {
+            searchBar.focus(); // Enfocar la barra de búsqueda al abrirla
+        }
+    });
 });
 
 // Obtener la lista de inventarios

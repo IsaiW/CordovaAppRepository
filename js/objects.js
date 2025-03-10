@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
         addObjectModal.show();
     });
 
+    document.getElementById("editObjectModal").removeAttribute("aria-hidden");
+
 
     if (!inventoryId) {
         Swal.fire("Error", "No se ha seleccionado un inventario", "error");
@@ -75,13 +77,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // Guardar cambios en el objeto
     document.getElementById("editObjectForm").addEventListener("submit", async function (event) {
         event.preventDefault();
-    
-        const id = document.getElementById("editObjectId").value;
+
+        const objectId = document.getElementById("editObjectId").value;
         const name = document.getElementById("editObjectName").value;
         const quantity = document.getElementById("editObjectQuantity").value;
         const typeQR = document.getElementById("editObjectTypeQR").value;
         const imageFile = document.getElementById("editObjectImage").files[0];
-    
+
         let formData = new FormData();
         formData.append("name", name);
         formData.append("quantity", quantity);
@@ -89,29 +91,40 @@ document.addEventListener("DOMContentLoaded", function () {
         if (imageFile) {
             formData.append("image", imageFile);
         }
-    
-        // Obtener atributos editados
-        let updatedAttributes = [];
+
+        // Limpiar arrays ANTES de obtener los nuevos datos para evitar duplicaciones
+        selectedEditAttributes = [];
+        selectedEditTags = [];
+
+        // Obtener atributos editados sin duplicados
         document.querySelectorAll("#editAttributesList .attribute-value").forEach(input => {
-            updatedAttributes.push({
-                AttributeId: input.dataset.attrId,
-                Value: input.value
-            });
+            let attrId = parseInt(input.dataset.attrId);
+            let attrValue = input.value;
+
+            // Verificar si ya existe en selectedEditAttributes para evitar duplicados
+            if (!selectedEditAttributes.some(attr => attr.AttributeId === attrId)) {
+                selectedEditAttributes.push({
+                    AttributeId: attrId,
+                    Value: attrValue
+                });
+            }
         });
-    
-        // Obtener etiquetas editadas
-        let updatedTags = [];
-        document.querySelectorAll("#editTagsList .tag-name").forEach(input => {
-            updatedTags.push({
-                TagId: input.dataset.tagId,
-                Name: input.value
-            });
+
+        // Obtener etiquetas editadas sin duplicados
+        document.querySelectorAll("#editTagsList .input-group").forEach(div => {
+            let input = div.querySelector(".tag-name");
+            let tagId = parseInt(div.dataset.tagId);
+
+            if (!selectedEditTags.some(tag => tag.TagId === tagId)) {
+                selectedEditTags.push({
+                    TagId: tagId,
+                    Name: input.value
+                });
+            }
         });
-    
-        formData.append("attributes", JSON.stringify(updatedAttributes));
-        formData.append("tags", JSON.stringify(updatedTags));
-    
-        fetch(`https://stackqr.bsite.net/api/objects/${id}`, {
+
+        // Actualizar objeto en la API
+        fetch(`https://stackqr.bsite.net/api/objects/${objectId}`, {
             method: "PUT",
             body: formData
         })
@@ -122,19 +135,58 @@ document.addEventListener("DOMContentLoaded", function () {
             return response.json();
         })
         .then(() => {
-            Swal.fire("Éxito", "Objeto actualizado correctamente", "success").then(() => {
-                fetchObjects(inventoryId);
-            });
+            console.log("Objeto actualizado correctamente.");
+
+            // Asignar etiquetas al objeto
+            if (selectedEditTags.length > 0) {
+                return fetch(`https://stackqr.bsite.net/api/tags/assign/${objectId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(selectedEditTags.map(tag => tag.TagId))
+                });
+            }
+        })
+        .then(response => {
+            if (response && !response.ok) {
+                throw new Error("No se pudieron asignar las etiquetas.");
+            }
+            console.log("Etiquetas asignadas correctamente.");
+        })
+        .then(() => {
+            // Asignar atributos al objeto
+            assignAttributesToObject(objectId, selectedEditAttributes);
+            // if (selectedEditAttributes.length > 0) {
+            //     return fetch(`https://stackqr.bsite.net/api/attributes/assign/${objectId}`, {
+            //         method: "POST",
+            //         headers: {
+            //             "Content-Type": "application/json"
+            //         },
+            //         body: JSON.stringify(selectedEditAttributes)
+            //     });
+            // }
+        })
+        .then(response => {
+            if (response && !response.ok) {
+                throw new Error("No se pudieron asignar los atributos.");
+            }
+            console.log("Atributos asignados correctamente.");
+        })
+        .then(() => {
+            // Recargar la lista de objetos y cerrar modal
+            fetchObjects(inventoryId);
             document.getElementById("editObjectForm").reset();
             let modal = bootstrap.Modal.getInstance(document.getElementById("editObjectModal"));
             modal.hide();
+            document.getElementById("editObjectModal").setAttribute("aria-hidden", "true");
+
         })
         .catch(error => {
-            console.error("Error al actualizar objeto:", error);
-            Swal.fire("Error", "No se pudo actualizar el objeto", "error");
+            console.error("Error en el proceso de edición:", error);
         });
-    });       
-
+    });
+    
     // Manejar la busqueda de objetos
     document.getElementById("searchBar").addEventListener("input", function () {
         const searchText = this.value.toLowerCase();
@@ -148,6 +200,24 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!searchBar.classList.contains("search-hidden")) {
             searchBar.focus(); 
         }
+    });
+
+    // Manejar el boton de anadir etiqueta
+    document.getElementById("addTagToEditListBtn").addEventListener("click", function () {
+        let tagSelect = document.getElementById("editTagSelect");
+        let selectedTagId = tagSelect.value;
+        let selectedTagName = tagSelect.options[tagSelect.selectedIndex].text;
+    
+        if (!selectedTagId) {
+            console.error("No se seleccionó ninguna etiqueta.");
+            return;
+        }
+    
+        // Agregar la etiqueta visualmente
+        addTagToEditList(selectedTagId, selectedTagName);
+    
+        // Guardar en la lista de etiquetas seleccionadas
+        selectedEditTags.push({ TagId: selectedTagId, Name: selectedTagName });
     });
 
 });
@@ -189,6 +259,40 @@ function fetchTags() {
         .then(response => response.json())
         .then(data => {
             const tagSelect = document.getElementById("tagSelect");
+            tagSelect.innerHTML = '<option value="">Seleccionar etiqueta</option>';
+            data.forEach(tag => {
+                let option = document.createElement("option");
+                option.value = tag.id_tag;
+                option.textContent = tag.name;
+                tagSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error("Error al obtener etiquetas:", error));
+}
+
+// Funcion para obtener atributos para editar
+function fetchAttributesForEdit() {
+    fetch("https://stackqr.bsite.net/api/attributes")
+        .then(response => response.json())
+        .then(data => {
+            let attributeSelect = document.getElementById("editAttributeSelect");
+            attributeSelect.innerHTML = '<option value="">Seleccionar atributo</option>';
+            data.forEach(attribute => {
+                let option = document.createElement("option");
+                option.value = attribute.id_attribute;
+                option.textContent = attribute.name;
+                attributeSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error("Error al obtener atributos:", error));
+}
+
+// Funcion para obtener etiquetas para editar
+function fetchTagsForEdit() {
+    fetch("https://stackqr.bsite.net/api/tags")
+        .then(response => response.json())
+        .then(data => {
+            let tagSelect = document.getElementById("editTagSelect");
             tagSelect.innerHTML = '<option value="">Seleccionar etiqueta</option>';
             data.forEach(tag => {
                 let option = document.createElement("option");
@@ -285,6 +389,51 @@ function deleteObject(id) {
 let selectedEditAttributes = [];
 let selectedEditTags = [];
 
+// Función para manejar la adición de atributos en la edición
+function handleAddAttributeToEdit() {
+    let attributeSelect = document.getElementById("editAttributeSelect");
+    let valueInput = document.getElementById("editAttributeValue");
+    let attributeId = attributeSelect.value;
+    let attributeName = attributeSelect.options[attributeSelect.selectedIndex].text;
+    let attributeValue = valueInput.value.trim();
+
+    if (!attributeId || !attributeValue) {
+        console.error("Faltan datos del atributo");
+        return;
+    }
+
+    addAttributeToEditList(attributeId, attributeName, attributeValue);
+    selectedEditAttributes.push({ AttributeId: attributeId, Name: attributeName, Value: attributeValue });
+
+    // Limpiar el input después de añadir
+    valueInput.value = "";
+}
+
+
+// Función para manejar la adición de etiquetas en la edición
+function handleAddTagToEdit() {
+    let tagSelect = document.getElementById("editTagSelect");
+    let tagId = tagSelect.value;
+    let tagName = tagSelect.options[tagSelect.selectedIndex]?.text || "";
+
+    if (!tagId) {
+        console.error("No se seleccionó ninguna etiqueta.");
+        return;
+    }
+
+    // Verificar si la etiqueta ya fue agregada
+    if (selectedEditTags.some(tag => tag.TagId == tagId)) {
+        console.warn("La etiqueta ya está agregada:", tagName);
+        return; // Evita agregar etiquetas duplicadas
+    }
+
+    addTagToEditList(tagId, tagName);
+    selectedEditTags.push({ TagId: tagId, Name: tagName });
+
+    console.log("Etiqueta añadida correctamente:", tagId, tagName);
+}
+
+
 // Abrir modal de edición con datos actuales y cargar atributos y etiquetas relacionadas
 function openEditModal(id, name, quantity, typeQR, image) {
     document.getElementById("editObjectId").value = id;
@@ -297,6 +446,12 @@ function openEditModal(id, name, quantity, typeQR, image) {
 
     editAttributesList.innerHTML = "";
     editTagsList.innerHTML = "";
+
+    selectedEditAttributes = [];
+    selectedEditTags = [];
+
+    fetchAttributesForEdit();
+    fetchTagsForEdit();
 
     fetch(`https://stackqr.bsite.net/api/objects/${id}`)
         .then(response => response.json())
@@ -327,56 +482,136 @@ function openEditModal(id, name, quantity, typeQR, image) {
 function addAttributeToEditList(attributeId, name, value) {
     let editAttributesList = document.getElementById("editAttributesList");
 
-    if (!attributeId || !name || !value) {
-        Swal.fire("Error", "Faltan datos del atributo", "error");
+    // Verificar si el atributo ya existe en el DOM
+    if (document.querySelector(`#editAttributesList [data-attr-id="${attributeId}"]`)) {
+        console.warn("Atributo ya existe en la lista, evitando duplicación:", name);
         return;
     }
 
+    // Agregar al DOM
     let listItem = document.createElement("div");
     listItem.className = "input-group mb-2";
-
     listItem.innerHTML = `
         <input type="text" class="form-control attribute-name" value="${name}" readonly>
         <input type="text" class="form-control attribute-value" value="${value}" data-attr-id="${attributeId}">
-        <button class="btn btn-danger" onclick="removeEditAttribute(this, ${attributeId})"><i class="bi bi-x"></i></button>
+        <button type="button" class="btn btn-danger" onclick="removeEditAttribute(this, ${attributeId})">
+            <i class="bi bi-x"></i>
+        </button>
     `;
-
     editAttributesList.appendChild(listItem);
 
-    selectedEditAttributes.push({ AttributeId: attributeId, Name: name, Value: value });
+    // Agregar al array si no existe
+    if (!selectedEditAttributes.some(attr => attr.AttributeId === attributeId)) {
+        selectedEditAttributes.push({ AttributeId: attributeId, Name: name, Value: value });
+    }
 }
 
-// Función para añadir una etiqueta a la lista de edición
+
+// Función para añadir una etiqueta a la lista de edición (corrigiendo duplicados)
 function addTagToEditList(tagId, name) {
     let editTagsList = document.getElementById("editTagsList");
 
-    if (!tagId || !name) {
-        Swal.fire("Error", "Faltan datos de la etiqueta", "error");
+    // Verificar si ya existe en el DOM
+    if (document.querySelector(`#editTagsList [data-tag-id="${tagId}"]`)) {
+        console.warn("Etiqueta ya existe en la lista:", name);
         return;
     }
 
     let listItem = document.createElement("div");
     listItem.className = "input-group mb-2";
+    listItem.setAttribute("data-tag-id", tagId);
 
     listItem.innerHTML = `
         <input type="text" class="form-control tag-name" value="${name}" readonly>
-        <button class="btn btn-danger" onclick="removeEditTag(this, ${tagId})"><i class="bi bi-x"></i></button>
+        <button type="button" class="btn btn-danger" onclick="removeEditTag(this, ${tagId})">
+            <i class="bi bi-x"></i>
+        </button>
     `;
 
     editTagsList.appendChild(listItem);
-
-    selectedEditTags.push({ TagId: tagId, Name: name });
 }
 
-// Función para eliminar un atributo del modal de edición
-function removeEditAttribute(button, attrId) {
-    button.parentElement.remove();
+// Funcion para anadir etiquetas a un objeto
+function addTagsToObject(objectId, selectedTagIds) {
+    if (!selectedTagIds.length) return;
+
+    fetch(`https://stackqr.bsite.net/api/tags/assign/${objectId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(selectedTagIds)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Etiquetas añadidas:", data);
+        fetchObjectDetails(objectId); // Recargar detalles del objeto
+    })
+    .catch(error => console.error("Error al añadir etiquetas:", error));
 }
 
-// Función para eliminar una etiqueta en el modal de edición
+// Función para eliminar la relación entre un objeto y un atributo
+function removeEditAttribute(button, attributeId) {
+    event.preventDefault(); // Evita que el formulario se envíe y cierre el modal
+
+    let objectId = document.getElementById("editObjectId").value;
+
+    fetch(`https://stackqr.bsite.net/api/attributes/remove/${objectId}/${attributeId}`, {
+        method: "DELETE"
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("No se pudo eliminar la relación del atributo con el objeto.");
+        }
+        return response.json();
+    })
+    .then(() => {
+        console.log(`Atributo ${attributeId} eliminado del objeto ${objectId}`);
+        
+        // Eliminar visualmente el atributo del DOM
+        button.parentElement.remove();
+
+        // Filtrar el atributo de la lista de atributos seleccionados
+        selectedEditAttributes = selectedEditAttributes.filter(attr => attr.AttributeId !== attributeId);
+
+        console.log("Lista actualizada de atributos:", selectedEditAttributes);
+    })
+    .catch(error => {
+        console.error("Error al eliminar la relación atributo-objeto:", error);
+    });
+}
+
+// Función para eliminar una etiqueta de la edición del objeto
 function removeEditTag(button, tagId) {
-    button.parentElement.remove();
+    let objectId = document.getElementById("editObjectId").value;
+
+    fetch(`https://stackqr.bsite.net/api/tags/remove/${objectId}/${tagId}`, {
+        method: "DELETE"
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("No se pudo eliminar la etiqueta.");
+        }
+        return response.json();
+    })
+    .then(() => {
+        console.log(`Etiqueta ${tagId} eliminada del objeto ${objectId}`);
+
+        // Eliminar visualmente la etiqueta del DOM
+        button.parentElement.remove();
+
+        // Filtrar la etiqueta del array de etiquetas seleccionadas
+        selectedEditTags = selectedEditTags.filter(tag => tag.TagId != tagId);
+
+        console.log("Lista actualizada de etiquetas:", selectedEditTags);
+    })
+    .catch(error => {
+        console.error("Error al eliminar la etiqueta:", error);
+    });
 }
+
+
+
 
 // ---- Navegación ---- //
 
@@ -585,3 +820,35 @@ function addTag() {
     listItem.appendChild(removeButton);
     tagsList.appendChild(listItem);
 }
+
+// Función para asignar atributos al objeto en edición
+async function assignAttributesToObject(objectId, selectedEditAttributes) {
+    if (selectedEditAttributes.length === 0) return;
+
+    try {
+        const requests = selectedEditAttributes.map(attr => {
+            return fetch(`https://stackqr.bsite.net/api/attributes/assign/${objectId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    AttributeId: attr.AttributeId,
+                    Value: attr.Value
+                })
+            });
+        });
+
+        const responses = await Promise.all(requests);
+        for (const response of responses) {
+            if (!response.ok) {
+                throw new Error(`Error en la asignación de atributos: ${response.statusText}`);
+            }
+        }
+
+        console.log("Todos los atributos se asignaron correctamente.");
+    } catch (error) {
+        console.error("Error al asignar atributos:", error);
+    }
+}
+
