@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const newAttributeModal = new bootstrap.Modal(document.getElementById("newAttributeModal"));
     const newTagModal = new bootstrap.Modal(document.getElementById("newTagModal"));
     
+    document.getElementById("addObjectModal").addEventListener("shown.bs.modal", function () {
+        this.removeAttribute("aria-hidden");
+    });
+
     // Reabrir el modal de agregar objeto cuando se cierre el modal de agregar atributo
     document.getElementById("newAttributeModal").addEventListener("hidden.bs.modal", function () {
         addObjectModal.show();
@@ -49,28 +53,55 @@ document.addEventListener("DOMContentLoaded", function () {
         // Agregar atributos al FormData
         formData.append("attributes", JSON.stringify(selectedAttributes));
 
-        // Agregar etiquetas al FormData (aquí estaba el error)
+        // Agregar etiquetas al FormData
         formData.append("tags", JSON.stringify(selectedTags));
+
+        console.log("Enviando datos al servidor para crear el objeto...");
 
         fetch(`https://stackqr.bsite.net/api/objects/${inventoryId}`, {
             method: "POST",
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(`Error en API: ${response.status} - ${text}`); });
+            }
+            return response.json();
+        })
+        .then(async (data) => { 
+            console.log("Objeto creado con éxito:", data);
+        
+            if (!data.object || !data.object.id_object) {
+                console.error("Error: La API no devolvió un ID válido para el objeto.");
+                return;
+            }
+        
+            const objectId = data.object.id_object;
+            console.log(`Objeto creado con ID: ${objectId}`);
+        
+            console.log(`Generando QR para el objeto ${objectId} en el inventario ${inventoryId}...`);
+            await generateAndSaveQRCode(objectId, inventoryId);
+            console.log("Código QR generado y guardado correctamente.");
+        
             Swal.fire("Éxito", "Objeto agregado correctamente", "success");
+        
+            // Limpiar formularios y listas
             selectedAttributes = [];
-            selectedTags = [];  // Limpiar las etiquetas seleccionadas
+            selectedTags = [];
             document.getElementById("objectForm").reset();
             document.getElementById("attributesList").innerHTML = "";
-            document.getElementById("tagsList").innerHTML = ""; // Limpiar lista de etiquetas
+            document.getElementById("tagsList").innerHTML = ""; 
+        
+            // Cerrar modal
             let modal = bootstrap.Modal.getInstance(document.getElementById("addObjectModal"));
             modal.hide();
-            fetchObjects(inventoryId); // Recargar lista de objetos
+        
+            // Recargar lista de objetos
+            fetchObjects(inventoryId);
         })
         .catch(error => {
             console.error("Error al agregar objeto:", error);
-            Swal.fire("Error", "No se pudo agregar el objeto", "error");
+            Swal.fire("Error", `No se pudo agregar el objeto: ${error.message}`, "error");
         });
     });
 
@@ -202,23 +233,23 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Manejar el boton de anadir etiqueta
-    document.getElementById("addTagToEditListBtn").addEventListener("click", function () {
-        let tagSelect = document.getElementById("editTagSelect");
-        let selectedTagId = tagSelect.value;
-        let selectedTagName = tagSelect.options[tagSelect.selectedIndex].text;
+    // // Manejar el boton de anadir etiqueta
+    // document.getElementById("addTagToEditListBtn").addEventListener("click", function () {
+    //     let tagSelect = document.getElementById("editTagSelect");
+    //     let selectedTagId = tagSelect.value;
+    //     let selectedTagName = tagSelect.options[tagSelect.selectedIndex].text;
     
-        if (!selectedTagId) {
-            console.error("No se seleccionó ninguna etiqueta.");
-            return;
-        }
+    //     if (!selectedTagId) {
+    //         console.error("No se seleccionó ninguna etiqueta.");
+    //         return;
+    //     }
     
-        // Agregar la etiqueta visualmente
-        addTagToEditList(selectedTagId, selectedTagName);
+    //     // Agregar la etiqueta visualmente
+    //     addTagToEditList(selectedTagId, selectedTagName);
     
-        // Guardar en la lista de etiquetas seleccionadas
-        selectedEditTags.push({ TagId: selectedTagId, Name: selectedTagName });
-    });
+    //     // Guardar en la lista de etiquetas seleccionadas
+    //     selectedEditTags.push({ TagId: selectedTagId, Name: selectedTagName });
+    // });
 
 });
 
@@ -369,16 +400,23 @@ function deleteObject(id) {
             fetch(`https://stackqr.bsite.net/api/objects/${id}`, {
                 method: "DELETE"
             })
-            .then(response => response.json())
-            .then(() => {
+            .then(async response => {
+                const responseData = await response.text();
+                
+                if (!response.ok) {
+                    console.error("Error en API:", responseData);
+                    throw new Error(`Error en API: ${response.status} - ${responseData}`);
+                }
+
+                console.log("API Respuesta:", responseData);
+
                 Swal.fire("Eliminado", "El objeto fue eliminado correctamente", "success").then(() => {
                     window.location.reload();
                 });
-
             })
             .catch(error => {
                 console.error("Error al eliminar objeto:", error);
-                Swal.fire("Error", "No se pudo eliminar el objeto", "error");
+                Swal.fire("Error", `No se pudo eliminar el objeto: ${error.message}`, "error");
             });
         }
     });
@@ -409,7 +447,6 @@ function handleAddAttributeToEdit() {
     valueInput.value = "";
 }
 
-
 // Función para manejar la adición de etiquetas en la edición
 function handleAddTagToEdit() {
     let tagSelect = document.getElementById("editTagSelect");
@@ -432,7 +469,6 @@ function handleAddTagToEdit() {
 
     console.log("Etiqueta añadida correctamente:", tagId, tagName);
 }
-
 
 // Abrir modal de edición con datos actuales y cargar atributos y etiquetas relacionadas
 function openEditModal(id, name, quantity, typeQR, image) {
@@ -505,7 +541,6 @@ function addAttributeToEditList(attributeId, name, value) {
         selectedEditAttributes.push({ AttributeId: attributeId, Name: name, Value: value });
     }
 }
-
 
 // Función para añadir una etiqueta a la lista de edición (corrigiendo duplicados)
 function addTagToEditList(tagId, name) {
@@ -609,9 +644,6 @@ function removeEditTag(button, tagId) {
         console.error("Error al eliminar la etiqueta:", error);
     });
 }
-
-
-
 
 // ---- Navegación ---- //
 
@@ -852,3 +884,61 @@ async function assignAttributesToObject(objectId, selectedEditAttributes) {
     }
 }
 
+async function generateAndSaveQRCode(objectId, inventoryId) {
+    try {
+        console.log(`Iniciando generación de QR para ObjectID: ${objectId}, InventoryID: ${inventoryId}`);
+
+        if (!objectId || !inventoryId) {
+            console.error("Error: objectId o inventoryId son inválidos");
+            return;
+        }
+
+        const qrRoute = `${objectId}`;
+        console.log(`Ruta del QR generada: ${qrRoute}`);
+
+        const canvas = document.createElement("canvas");
+        const qr = new QRious({
+            element: canvas,
+            value: qrRoute,
+            size: 200,
+            level: "H"
+        });
+
+        console.log("Código QR generado en el canvas");
+
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+        if (!blob) {
+            console.error("Error: No se pudo convertir el QR a Blob");
+            return;
+        }
+        console.log("QR convertido a imagen Blob:", blob);
+
+        const formData = new FormData();
+        formData.append("image", blob, `QR_${objectId}.png`);
+        formData.append("route", qrRoute);
+        formData.append("fk_object", objectId);
+        formData.append("fk_inventory", inventoryId);
+
+        console.log("Enviando QR al backend...");
+
+        const response = await fetch("https://stackqr.bsite.net/api/qrcodes/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        console.log("Respuesta del servidor recibida");
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error al guardar el código QR en la base de datos:", errorText);
+            return;
+        }
+
+        const result = await response.json();
+        console.log("Código QR guardado exitosamente en la base de datos:", result);
+        return result;
+
+    } catch (error) {
+        console.error("Error generando y guardando el código QR:", error);
+    }
+}

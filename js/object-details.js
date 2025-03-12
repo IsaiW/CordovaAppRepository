@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     fetchObjectDetails(objectId);
+    
 });
 
 function fetchObjectDetails(objectId) {
@@ -55,11 +56,19 @@ function fetchObjectDetails(objectId) {
                         <br>
                         <h5>Etiquetas</h5>
                         <div>${tagElements}</div>
+                        <h5 class="mt-3">Código QR</h5>
+                        <div id="qrContainer" class="text-center">
+                            <p>Cargando código QR...</p>
+                        </div>
                     </div>
                 </div>
             `;
 
             detailsContainer.innerHTML = detailsHTML;
+
+            // Llamar a la función para obtener el código QR del objeto
+            fetchQRCode(objectId);
+
         })
         .catch(error => {
             console.error("Error al obtener detalles del objeto:", error);
@@ -103,4 +112,54 @@ function removeTag(objectId, tagId) {
             });
         }
     });
+}
+
+function fetchQRCode(objectId) {
+    fetch(`https://stackqr.bsite.net/api/qrcodes/object/${objectId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("No se pudo obtener el código QR");
+            }
+            return response.json();
+        })
+        .then(qrCodes => {
+            const qrContainer = document.getElementById("qrContainer");
+
+            if (qrCodes.length > 0) {
+                const qr = qrCodes[0]; // Tomar el primer QR si hay varios
+                
+                // Verificar si el QR tiene imagen y ruta antes de mostrarlo
+                const qrImage = qr.image ? qr.image : "https://stackqr.bsite.net/uploads/qrcodes/default-qr.png";
+                const qrRoute = qr.route ? qr.route : "#";
+
+                qrContainer.innerHTML = `
+                    <div class="text-center">
+                        <br>
+                        <img id="qrImage" src="${qrImage}" alt="Código QR" class="img-thumbnail mb-2" style="max-width: 200px;">
+                        <br>
+                        
+                        <!-- Botón de descarga -->
+                        <button class="btn btn-success mt-2" onclick="downloadQRCode('${qrImage}', ${objectId})">
+                            <i class="bi bi-download"></i> Descargar QR
+                        </button>
+                    </div>
+                `;
+            } else {
+                qrContainer.innerHTML = `<p class="text-danger">No hay código QR asignado.</p>`;
+            }
+        })
+        .catch(error => {
+            console.error("Error al obtener código QR:", error);
+            document.getElementById("qrContainer").innerHTML = `<p class="text-danger">Error al cargar el QR.</p>`;
+        });
+}
+
+// Función para descargar el código QR correctamente
+function downloadQRCode(qrImageUrl, objectId) {
+    const link = document.createElement("a");
+    link.href = qrImageUrl;
+    link.setAttribute("download", `QR_Object_${objectId}.png`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
